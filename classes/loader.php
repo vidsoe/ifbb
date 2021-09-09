@@ -22,7 +22,7 @@ final class Loader {
 		}
 		return wp_add_inline_script($handle, $data, $position);
 	}
-	
+
 	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 	public static function enqueue_asset($handle = '', $src = '', $deps = []){
@@ -50,7 +50,7 @@ final class Loader {
 				break;
 		}
 	}
-	
+
 	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     public static function get_file(){
@@ -61,6 +61,7 @@ final class Loader {
 
     public static function load($file = ''){
     	self::$file = $file;
+        add_action('plugins_loaded', [__CLASS__, 'plugins_loaded']);
 		foreach(glob(plugin_dir_path(self::$file) . 'classes/*.php') as $file){
 			$class = basename($file, '.php');
 			if('loader' === $class){
@@ -71,7 +72,18 @@ final class Loader {
 			if(is_callable([$class, 'load'])){
 				call_user_func([$class, 'load']);
 			}
-		}	
+		}
+    }
+
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    public static function plugins_loaded(){
+    	if(!function_exists('is_plugin_active')){
+            require_once(ABSPATH . 'wp-admin/includes/plugin.php');
+        }
+        if(is_plugin_active('vidsoe/vidsoe.php')){
+            vidsoe()->build_update_checker('https://github.com/vidsoe/ifbb', self::$file, 'ifbb');
+        }
     }
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
