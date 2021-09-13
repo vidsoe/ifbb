@@ -73,6 +73,7 @@ final class Loader {
 				call_user_func([$class, 'load']);
 			}
 		}
+        require_once(plugin_dir_path(self::$file) . 'functions.php');
     }
 
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

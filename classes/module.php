@@ -45,7 +45,7 @@ final class Module {
 	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 	public function register(){
-		\FLBuilder::register_module($this->id, $this->parse());
+		self::$modules[$this->id] = $this->parse();
 	}
 
 	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -64,25 +64,33 @@ final class Module {
 	}
 
 	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	//
+	// static protected
+	//
+	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-}
+	static protected $modules = [];
 
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-//
-// functions
-//
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	//
+	// static public
+	//
+	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-if(!function_exists('ifbb_module')){
-    function ifbb_module($class_name = ''){
-        return new Module($class_name);
-    }
-}
+	static public function init(){
+		if(class_exists('\FLBuilder')){
+			foreach(self::$modules as $id => $settings){
+				\FLBuilder::register_module($id, $settings);
+			}
+		}
+	}
 
-// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-if(!function_exists('ifbb_settings_form')){
-    function ifbb_settings_form($id = '', $title = ''){
-        return new Settings_Form($id, $title);
-    }
+	static public function load(){
+		add_action('init', [__CLASS__, 'init']);
+	}
+
+	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 }

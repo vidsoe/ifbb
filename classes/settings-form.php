@@ -45,7 +45,7 @@ final class Settings_Form {
 	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 	public function register(){
-		\FLBuilder::register_settings_form($this->id, $this->parse());
+		self::$settings_forms[$this->id] = $this->parse();
 	}
 
 	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -61,6 +61,34 @@ final class Settings_Form {
 				wp_die('Tab "' . esc_html($id) . '" does not exist.');
 			}
 		}
+	}
+
+	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	//
+	// static protected
+	//
+	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+	static protected $settings_forms = [];
+
+	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	//
+	// static public
+	//
+	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+	static public function init(){
+		if(class_exists('\FLBuilder')){
+			foreach(self::$settings_forms as $id => $settings){
+				\FLBuilder::register_settings_form($id, $settings);
+			}
+		}
+	}
+
+	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+	static public function load(){
+		add_action('init', [__CLASS__, 'init']);
 	}
 
 	// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

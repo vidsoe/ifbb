@@ -12,7 +12,7 @@ Plugin URI: https://github.com/vidsoe/ifbb
 Requires at least: 5.6
 Requires PHP: 5.6
 Text Domain: ifbb
-Version: 0.9.9
+Version: 0.9.13
 */
 
 defined('ABSPATH') or die('Hi there! I\'m just a plugin, not much I can do when called directly.');
